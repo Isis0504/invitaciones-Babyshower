@@ -18,7 +18,7 @@ Edita [`src/configuracion.js`](./src/configuracion.js):
 - `configuracion.fecha`, `hora` y `lugar`: datos que se muestran en la cuarta escena.
 - `configuracion.fechaEvento`: fecha y hora ISO 8601 con zona horaria de Colombia, usadas por la cuenta regresiva.
 - `configuracion.telefonoWhatsApp`: número con código de país, solo dígitos y sin `+`. Mientras quede vacío, el enlace permite elegir una conversación en WhatsApp.
-- `invitados`: añade o modifica claves, nombres y listas de regalos. Por ejemplo, la clave `ana` corresponde a `/invitacion/ana`.
+- `invitados`: añade o modifica claves, nombres y listas de regalos. Usa claves en minúsculas: por ejemplo, la clave `angelly` corresponde a `/invitacion/angelly`.
 
 Si la ruta no coincide con un invitado registrado, se muestra una invitación genérica con una lista de regalos de ejemplo.
 
