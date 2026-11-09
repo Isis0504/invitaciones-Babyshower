@@ -4,6 +4,7 @@ export const configuracion = {
   hora: '2:00 p. m.',
   lugar: 'Carrera 97F #26-71',
   telefonoWhatsApp: '3023703731',
+  audioFondo: '/audio/cancion.mp3',
 };
 
 export const invitados = {

@@ -1,11 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   CalendarDays,
   Clock3,
   MapPin,
+  Play,
   Sparkles,
+  VolumeX,
 } from 'lucide-react';
 import { configuracion, invitados } from './configuracion.js';
 import './styles.css';
@@ -38,7 +40,57 @@ function App() {
   const invitado = useMemo(getInvitado, []);
   const [escena, setEscena] = useState(0);
   const [transicion, setTransicion] = useState(null);
+  const [audioReproduciendo, setAudioReproduciendo] = useState(false);
+  const [errorAudio, setErrorAudio] = useState('');
+  const audioRef = useRef(null);
   const reducirMovimiento = useReducedMotion();
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.play()
+      .then(() => setAudioReproduciendo(true))
+      .catch((error) => {
+        if (error.name !== 'NotAllowedError') {
+          console.error('No se pudo reproducir la canción de fondo.', error);
+          setErrorAudio('No se pudo reproducir la canción. Revisa el archivo de audio.');
+        }
+      });
+  }, []);
+
+  const reproducirAudio = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    try {
+      await audio.play();
+      setAudioReproduciendo(true);
+      setErrorAudio('');
+    } catch (error) {
+      console.error('No se pudo reproducir la canción de fondo.', error);
+      setAudioReproduciendo(false);
+      setErrorAudio('No se pudo reproducir la canción. Revisa el archivo de audio.');
+    }
+  };
+
+  const alternarAudio = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      void reproducirAudio();
+    } else {
+      audio.pause();
+      setAudioReproduciendo(false);
+      setErrorAudio('');
+    }
+  };
+
+  const comenzarHistoria = () => {
+    void reproducirAudio();
+    avanzar();
+  };
 
   const cambiarEscena = (siguiente) => {
     if (siguiente === escena) return;
@@ -63,7 +115,7 @@ function App() {
           transition={{ duration: reducirMovimiento ? 0.15 : 0.45, ease: [0.22, 1, 0.36, 1] }}
           aria-live="polite"
         >
-          {escena === 0 && <Cover onNext={avanzar} />}
+          {escena === 0 && <Cover onNext={comenzarHistoria} />}
           {escena === 1 && <Adhara onNext={avanzar} />}
           {escena === 2 && (
             <Invitation
@@ -87,6 +139,36 @@ function App() {
           />
         )}
       </AnimatePresence>
+
+      {configuracion.audioFondo && (
+        <>
+          <audio
+            ref={audioRef}
+            src={configuracion.audioFondo}
+            loop
+            preload="none"
+            onError={() => {
+              setAudioReproduciendo(false);
+              setErrorAudio('No se encontró la canción. Revisa el archivo de audio.');
+            }}
+          />
+          <div className="music-control">
+            <button
+              className="music-toggle"
+              type="button"
+              onClick={alternarAudio}
+              aria-label={audioReproduciendo ? 'Pausar música' : 'Reproducir música'}
+              aria-pressed={audioReproduciendo}
+              title={audioReproduciendo ? 'Silenciar música' : 'Reproducir música'}
+            >
+              {audioReproduciendo
+                ? <VolumeX size={16} aria-hidden="true" />
+                : <Play size={16} aria-hidden="true" />}
+            </button>
+            {errorAudio && <p className="music-error" role="status">{errorAudio}</p>}
+          </div>
+        </>
+      )}
 
       {escena > 0 && <p className="page-note">Una invitación para celebrar con amor</p>}
     </main>
