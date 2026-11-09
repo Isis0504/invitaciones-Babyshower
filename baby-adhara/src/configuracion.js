@@ -46,6 +46,6 @@ export const invitados = {
   'abuelita-y-familia': { nombre: 'Abuelita y familia', regalos: ['Pañales', 'Pañitos'] },
   'aleida-y-jairsino': { nombre: 'Aleida y jairsiño', regalos: ['Pañales', 'Pañitos'] },
   'miguel-e-hija': { nombre: 'Miguel e hija', regalos: ['Pañales', 'Pañitos'] },
-  angelly: { nombre: 'Angelly', regalos: ['Una casa en Marsella', 'Una cuenta con plata para la universidad'] },
+  angelly: { nombre: 'Mi tia favorita', regalos: ['Una casa en Marsella', 'Una cuenta con plata para la universidad'] },
   'fredy-y-flia': { nombre: 'Sr. Fredy Torres y familia', regalos: ['Pañales', 'Pañitos'] },
 };
